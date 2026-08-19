@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aldriq Zachary — Mechatronics &amp; Maker Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A0E14;
+    --surface: #10161F;
+    --surface-2: #151C27;
+    --line: #232C39;
+    --copper: #C9814B;
+    --copper-bright: #E39A63;
+    --circuit: #4A9B6E;
+    --text: #E8E6DF;
+    --text-mute: #8A93A3;
+    --text-dim: #5B6472;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-body: 'Inter', sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--copper);color:var(--bg);}
+
+  /* background circuit texture */
+  .circuit-bg{
+    position:fixed; inset:0; z-index:0; pointer-events:none; opacity:0.35;
+  }
+
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 32px;}
+
+  /* NAV */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 32px;
+    background:rgba(10,14,20,0.75);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-id{
+    font-family:var(--font-mono); font-size:13px; color:var(--copper);
+    letter-spacing:0.05em;
+  }
+  .nav-links{display:flex; gap:28px; font-family:var(--font-mono); font-size:12.5px; letter-spacing:0.04em;}
+  .nav-links a{color:var(--text-mute); transition:color .2s;}
+  .nav-links a:hover{color:var(--copper-bright);}
+  @media(max-width:640px){ .nav-links{display:none;} }
+
+  /* HERO */
+  .hero{
+    min-height:100vh; display:flex; flex-direction:column; justify-content:center;
+    position:relative; z-index:1; padding:120px 32px 80px;
+  }
+  .eyebrow{
+    font-family:var(--font-mono); font-size:13px; color:var(--circuit);
+    letter-spacing:0.12em; margin-bottom:24px; display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:''; width:8px; height:8px; background:var(--circuit); border-radius:50%; box-shadow:0 0 8px var(--circuit); animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+  h1{
+    font-family:var(--font-display); font-weight:700;
+    font-size:clamp(40px, 7vw, 84px); line-height:1.02; letter-spacing:-0.02em;
+    max-width:900px;
+  }
+  h1 span{color:var(--copper);}
+  .hero-sub{
+    margin-top:28px; max-width:560px; font-size:17px; color:var(--text-mute);
+  }
+  .hero-meta{
+    margin-top:48px; display:flex; gap:40px; flex-wrap:wrap;
+    font-family:var(--font-mono); font-size:12.5px; color:var(--text-dim);
+  }
+  .hero-meta div span{display:block; color:var(--text); font-size:13px; margin-top:4px;}
+  .scroll-cue{
+    position:absolute; bottom:36px; left:32px; font-family:var(--font-mono);
+    font-size:11px; color:var(--text-dim); display:flex; align-items:center; gap:8px;
+  }
+  .scroll-cue .line{width:24px; height:1px; background:var(--text-dim); animation:extend 1.8s infinite;}
+  @keyframes extend{0%{width:0;}50%{width:24px;}100%{width:0;}}
+
+  /* SECTION shared */
+  section{position:relative; z-index:1; padding:100px 0;}
+  .sec-head{display:flex; align-items:baseline; gap:16px; margin-bottom:48px;}
+  .sec-num{font-family:var(--font-mono); color:var(--copper); font-size:13px;}
+  .sec-title{font-family:var(--font-display); font-size:32px; font-weight:600;}
+  .sec-rule{flex:1; height:1px; background:var(--line);}
+
+  /* ABOUT */
+  #about{border-top:1px solid var(--line);}
+  .about-grid{display:grid; grid-template-columns:1.3fr 1fr; gap:64px;}
+  @media(max-width:800px){.about-grid{grid-template-columns:1fr;}}
+  .about-text p{color:var(--text-mute); font-size:15.5px; margin-bottom:16px;}
+  .about-text strong{color:var(--text); font-weight:600;}
+  .pinout{border:1px solid var(--line); background:var(--surface); border-radius:6px; overflow:hidden;}
+  .pinout-row{
+    display:flex; justify-content:space-between; padding:14px 18px;
+    border-bottom:1px solid var(--line); font-family:var(--font-mono); font-size:12.5px;
+  }
+  .pinout-row:last-child{border-bottom:none;}
+  .pinout-row .k{color:var(--text-dim);}
+  .pinout-row .v{color:var(--copper-bright); text-align:right;}
+
+  /* PROJECTS - datasheet cards */
+  #projects{border-top:1px solid var(--line);}
+  .proj-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  @media(max-width:760px){.proj-grid{grid-template-columns:1fr;}}
+  .proj-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:8px;
+    padding:26px; transition:border-color .25s, transform .25s;
+  }
+  .proj-card:hover{border-color:var(--copper); transform:translateY(-3px);}
+  .proj-top{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;}
+  .proj-id{font-family:var(--font-mono); font-size:11px; color:var(--text-dim); border:1px solid var(--line); padding:3px 8px; border-radius:4px;}
+  .proj-status{font-family:var(--font-mono); font-size:11px; color:var(--circuit);}
+  .proj-title{font-family:var(--font-display); font-size:19px; font-weight:600; margin-bottom:10px;}
+  .proj-desc{color:var(--text-mute); font-size:14.5px; margin-bottom:18px;}
+  .tag-row{display:flex; flex-wrap:wrap; gap:8px;}
+  .tag{
+    font-family:var(--font-mono); font-size:10.5px; color:var(--copper-bright);
+    background:rgba(201,129,75,0.08); border:1px solid rgba(201,129,75,0.25);
+    padding:4px 9px; border-radius:4px;
+  }
+
+  /* ACHIEVEMENTS */
+  #achievements{border-top:1px solid var(--line);}
+  .ach-cat{margin-bottom:40px;}
+  .ach-cat-label{font-family:var(--font-mono); font-size:12px; color:var(--text-dim); letter-spacing:0.08em; margin-bottom:16px; text-transform:uppercase;}
+  .ach-item{
+    display:grid; grid-template-columns:70px 1fr auto; gap:20px; align-items:baseline;
+    padding:14px 0; border-bottom:1px solid var(--line);
+  }
+  .ach-item:last-child{border-bottom:none;}
+  .ach-year{font-family:var(--font-mono); font-size:12px; color:var(--copper);}
+  .ach-name{font-size:14.5px; color:var(--text);}
+  .ach-org{font-family:var(--font-mono); font-size:11px; color:var(--text-dim); text-align:right;}
+  @media(max-width:600px){
+    .ach-item{grid-template-columns:1fr; gap:4px;}
+    .ach-org{text-align:left;}
+  }
+
+  /* TESTIMONIALS */
+  #testimonials{border-top:1px solid var(--line);}
+  .testi-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  @media(max-width:760px){.testi-grid{grid-template-columns:1fr;}}
+  .testi-card{
+    border:1px dashed var(--line); border-radius:8px; padding:24px;
+    min-height:180px; display:flex; flex-direction:column; justify-content:space-between;
+    color:var(--text-dim);
+  }
+  .testi-quote{font-family:var(--font-mono); font-size:13px; line-height:1.7;}
+  .testi-slot{font-family:var(--font-mono); font-size:11px; color:var(--text-dim); margin-top:16px;}
+
+  /* CONTACT / FOOTER */
+  #contact{border-top:1px solid var(--line); text-align:center; padding-bottom:60px;}
+  #contact h2{font-family:var(--font-display); font-size:36px; margin-bottom:16px;}
+  #contact p{color:var(--text-mute); max-width:480px; margin:0 auto 32px;}
+  .contact-links{display:flex; justify-content:center; gap:16px; flex-wrap:wrap; font-family:var(--font-mono); font-size:13px;}
+  .contact-links a{
+    border:1px solid var(--line); padding:10px 20px; border-radius:6px; color:var(--text);
+    transition:border-color .2s, color .2s;
+  }
+  .contact-links a:hover{border-color:var(--copper); color:var(--copper-bright);}
+  footer{
+    border-top:1px solid var(--line); padding:24px 32px; text-align:center;
+    font-family:var(--font-mono); font-size:11px; color:var(--text-dim);
+  }
+</style>
+</head>
+<body>
+
+<canvas class="circuit-bg" id="circuitCanvas"></canvas>
+
+<nav>
+  <div class="nav-id">AZ&nbsp;/&nbsp;01</div>
+  <div class="nav-links">
+    <a href="#about">ABOUT</a>
+    <a href="#projects">PROJECTS</a>
+    <a href="#achievements">ACHIEVEMENTS</a>
+    <a href="#testimonials">TESTIMONIALS</a>
+    <a href="#contact">CONTACT</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="eyebrow">DIPLOMA IN MECHATRONICS &middot; TEMASEK POLYTECHNIC</div>
+  <h1>Aldriq Zachary<br><span>Qurshairy Bin Ahmad Zaki</span></h1>
+  <p class="hero-sub">I learn by building — wiring sensors, writing firmware, and debugging things until they work. Every project below started with zero experience and a decision to figure it out anyway.</p>
+  <div class="hero-meta">
+    <div>TRACK<span>Engineering &middot; Robotics</span></div>
+    <div>STATUS<span>Top 10% &middot; Director's List, AY25/26</span></div>
+    <div>FOCUS<span>Embedded Systems &middot; IoT</span></div>
+  </div>
+  <div class="scroll-cue"><div class="line"></div>SCROLL</div>
+</header>
+
+<main>
+  <section id="about">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-num">01</span><span class="sec-title">About</span><div class="sec-rule"></div></div>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>I'm currently pursuing a <strong>Diploma in Mechatronics</strong> at Temasek Polytechnic, where I was awarded the <strong>Director's List Award</strong> and the <strong>Temasek Polytechnic Scholarship (Engineering)</strong> for placing among the top 10% of academic achievers.</p>
+          <p>My starting point was the <strong>Electronics and Microcontroller Club (EMC)</strong>, which I joined in Year 1 with no experience in programming or microcontrollers. Since then I've taught myself Python, C++ for Arduino, and how ESP32 microcontrollers work — turning that into a growing list of hands-on hardware and software projects.</p>
+          <p>Outside the workshop, I served as <strong>Robotics Club CCA Chairperson</strong> and represented my school in national robotics and mathematics competitions, while staying involved in community projects like designing a colouring book for seniors and organising food donation drives.</p>
+        </div>
+        <div class="pinout">
+          <div class="pinout-row"><span class="k">INSTITUTION</span><span class="v">Temasek Polytechnic</span></div>
+          <div class="pinout-row"><span class="k">PROGRAMME</span><span class="v">Diploma in Mechatronics</span></div>
+          <div class="pinout-row"><span class="k">LANGUAGES</span><span class="v">Python, C++, HTML/CSS/JS</span></div>
+          <div class="pinout-row"><span class="k">HARDWARE</span><span class="v">ESP32, Hall Effect Sensors</span></div>
+          <div class="pinout-row"><span class="k">TOOLS</span><span class="v">Flask, 3D Printing</span></div>
+          <div class="pinout-row"><span class="k">LEADERSHIP</span><span class="v">Robotics CCA Chairperson</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-num">02</span><span class="sec-title">Projects</span><div class="sec-rule"></div></div>
+      <div class="proj-grid">
+
+        <div class="proj-card">
+          <div class="proj-top"><span class="proj-id">PRJ&nbsp;/&nbsp;01</span><span class="proj-status">FIRST BUILD</span></div>
+          <div class="proj-title">Go-Kart Speedometer</div>
+          <p class="proj-desc">My first-ever project, built after joining EMC with zero prior experience. Measures go-kart wheel speed in real time using a Hall Effect sensor, housed in a custom 3D-printed mount. Required learning microcontroller programming, sensor calibration, and hardware troubleshooting from scratch.</p>
+          <div class="tag-row"><span class="tag">Hall Effect Sensor</span><span class="tag">ESP32</span><span class="tag">C++</span><span class="tag">3D Printing</span></div>
+        </div>
+
+        <div class="proj-card">
+          <div class="proj-top"><span class="proj-id">PRJ&nbsp;/&nbsp;02</span><span class="proj-status">PROTOTYPE</span></div>
+          <div class="proj-title">IoT Recycling Bin</div>
+          <p class="proj-desc">A team project built to remove the guesswork from waste sorting. Uses embedded sensors to detect and automatically sort waste, aimed at making sustainable habits effortless rather than relying on manual sorting.</p>
+          <div class="tag-row"><span class="tag">IoT</span><span class="tag">Sensors</span><span class="tag">Team Build</span></div>
+        </div>
+
+        <div class="proj-card">
+          <div class="proj-top"><span class="proj-id">PRJ&nbsp;/&nbsp;03</span><span class="proj-status">IN USE</span></div>
+          <div class="proj-title">Real-Time Scoring System</div>
+          <p class="proj-desc">Built to fix a problem I experienced firsthand as a competitor — slow, error-prone manual scoring. A Flask-based server delivering live, reliable results, developed for RoboCoder Challenge, the competition I organise.</p>
+          <div class="tag-row"><span class="tag">Flask</span><span class="tag">Python</span><span class="tag">HTML/CSS/JS</span></div>
+        </div>
+
+        <div class="proj-card">
+          <div class="proj-top"><span class="proj-id">PRJ&nbsp;/&nbsp;04</span><span class="proj-status">HARDWARE</span></div>
+          <div class="proj-title">32×32 LED Strip Display</div>
+          <p class="proj-desc">A programmable LED matrix build exploring addressable LED control and display logic — part of an ongoing series of hands-on electronics projects.</p>
+          <div class="tag-row"><span class="tag">Addressable LEDs</span><span class="tag">Embedded C</span></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="achievements">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-num">03</span><span class="sec-title">Achievements</span><div class="sec-rule"></div></div>
+
+      <div class="ach-cat">
+        <div class="ach-cat-label">Academic</div>
+        <div class="ach-item"><span class="ach-year">2026</span><span class="ach-name">Director's List Award — top 10% of academic achievers, Diploma in Mechatronics</span><span class="ach-org">Temasek Polytechnic</span></div>
+        <div class="ach-item"><span class="ach-year">2026</span><span class="ach-name">Temasek Polytechnic Scholarship (Engineering)</span><span class="ach-org">Temasek Polytechnic</span></div>
+        <div class="ach-item"><span class="ach-year">2024</span><span class="ach-name">Certificate for Outstanding Achievement — Physics</span><span class="ach-org">Meridian Secondary School</span></div>
+        <div class="ach-item"><span class="ach-year">2022</span><span class="ach-name">Honourable Mention, Singapore Mathematical Olympiad (Junior Section)</span><span class="ach-org">Singapore Mathematical Society</span></div>
+      </div>
+
+      <div class="ach-cat">
+        <div class="ach-cat-label">Competitions</div>
+        <div class="ach-item"><span class="ach-year">2026</span><span class="ach-name">Silver Award, Electronic Design Competition</span><span class="ach-org">Temasek Polytechnic</span></div>
+        <div class="ach-item"><span class="ach-year">2026</span><span class="ach-name">Merit Award, RoboCoder Challenge</span><span class="ach-org">Temasek Polytechnic</span></div>
+        <div class="ach-item"><span class="ach-year">2026</span><span class="ach-name">Pre-University Finalist, RoboVerse (BrainHack)</span><span class="ach-org">DSTA</span></div>
+        <div class="ach-item"><span class="ach-year">2023</span><span class="ach-name">Team Award (Gold) — First Place, One Hack at a Time Social Hackathon</span><span class="ach-org">Meridian Secondary School</span></div>
+        <div class="ach-item"><span class="ach-year">2022&ndash;24</span><span class="ach-name">School representative, National Robotics Competition</span><span class="ach-org">Meridian Secondary School</span></div>
+        <div class="ach-item"><span class="ach-year">2022</span><span class="ach-name">School representative, Singapore Amazing Flying Machine Competition</span><span class="ach-org">Meridian Secondary School</span></div>
+        <div class="ach-item"><span class="ach-year">2022&ndash;23</span><span class="ach-name">School representative, UNSW ICAS (Mathematics)</span><span class="ach-org">Meridian Secondary School</span></div>
+        <div class="ach-item"><span class="ach-year">2024</span><span class="ach-name">School representative, Singapore Junior Chemistry Olympiad</span><span class="ach-org">Meridian Secondary School</span></div>
+      </div>
+
+      <div class="ach-cat">
+        <div class="ach-cat-label">Leadership</div>
+        <div class="ach-item"><span class="ach-year">2023&ndash;24</span><span class="ach-name">Robotics Club CCA Chairperson</span><span class="ach-org">Meridian Secondary School</span></div>
+        <div class="ach-item"><span class="ach-year">2022</span><span class="ach-name">Class Chairperson</span><span class="ach-org">Meridian Secondary School</span></div>
+        <div class="ach-item"><span class="ach-year">2022</span><span class="ach-name">Robotics Club Lower Secondary CCA Executive Committee</span><span class="ach-org">Meridian Secondary School</span></div>
+      </div>
+
+      <div class="ach-cat">
+        <div class="ach-cat-label">Community</div>
+        <div class="ach-item"><span class="ach-year">2023</span><span class="ach-name">Designed a colouring book for seniors, Values in Action programme</span><span class="ach-org">Methodist Welfare Services, Pasir Ris</span></div>
+        <div class="ach-item"><span class="ach-year">2024</span><span class="ach-name">Food donation drive for needy families &amp; elderly care centres</span><span class="ach-org">Food From The Heart</span></div>
+        <div class="ach-item"><span class="ach-year">2024</span><span class="ach-name">Participant, Go Green Festival — environmental sustainability awareness</span><span class="ach-org">Meridian Secondary School</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="testimonials">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-num">04</span><span class="sec-title">Testimonials</span><div class="sec-rule"></div></div>
+      <div class="testi-grid">
+        <div class="testi-card">
+          <div class="testi-quote">"[ Testimonial pending — add a quote from a teacher, mentor, or CCA advisor. ]"</div>
+          <div class="testi-slot">— NAME, ROLE</div>
+        </div>
+        <div class="testi-card">
+          <div class="testi-quote">"[ Testimonial pending — add a quote from a project teammate or club member. ]"</div>
+          <div class="testi-slot">— NAME, ROLE</div>
+        </div>
+        <div class="testi-card">
+          <div class="testi-quote">"[ Testimonial pending — add a quote from a competition judge or supervisor. ]"</div>
+          <div class="testi-slot">— NAME, ROLE</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <h2>Let's build something.</h2>
+      <p>Open to conversations about mechatronics, robotics, and hands-on engineering projects.</p>
+      <div class="contact-links">
+        <a href="mailto:your.email@example.com">EMAIL</a>
+        <a href="#">LINKEDIN</a>
+        <a href="#">GITHUB</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>ALDRIQ ZACHARY QURSHAIRY BIN AHMAD ZAKI &middot; BUILT WITH INTENTION</footer>
+
+<script>
+  // subtle animated circuit trace background
+  const canvas = document.getElementById('circuitCanvas');
+  const ctx = canvas.getContext('2d');
+  let w, h;
+  function resize(){ w = canvas.width = window.innerWidth; h = canvas.height = document.body.scrollHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const nodes = [];
+  const nodeCount = Math.floor((w*h)/140000);
+  for(let i=0;i<nodeCount;i++){
+    nodes.push({
+      x: Math.random()*w,
+      y: Math.random()*h,
+      vx: (Math.random()-0.5)*0.15,
+      vy: (Math.random()-0.5)*0.15
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    ctx.strokeStyle = 'rgba(74,155,110,0.12)';
+    ctx.lineWidth = 1;
+    for(let i=0;i<nodes.length;i++){
+      const a = nodes[i];
+      a.x += a.vx; a.y += a.vy;
+      if(a.x<0||a.x>w) a.vx*=-1;
+      if(a.y<0||a.y>h) a.vy*=-1;
+      for(let j=i+1;j<nodes.length;j++){
+        const b = nodes[j];
+        const d = Math.hypot(a.x-b.x, a.y-b.y);
+        if(d<160){
+          ctx.beginPath();
+          ctx.moveTo(a.x,a.y);
+          ctx.lineTo(b.x,a.y);
+          ctx.lineTo(b.x,b.y);
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+</script>
+
+</body>
+</html>
